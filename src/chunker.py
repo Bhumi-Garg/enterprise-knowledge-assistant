@@ -1,16 +1,30 @@
-def chunk_text(text, chunk_size=500, overlap=50):
+def chunk_text(text, chunk_size=1200):
+    
+    paragraphs = text.split("\n\n")
+
     chunks = []
 
-    start = 0
+    current_chunk = ""
 
-    while start < len(text):
-        end = start + chunk_size
+    for paragraph in paragraphs:
 
-        chunk = text[start:end]
+        paragraph = paragraph.strip()
 
-        chunks.append(chunk)
+        if not paragraph:
+            continue
 
-        start += chunk_size - overlap
+        if len(current_chunk) + len(paragraph) < chunk_size:
+
+            current_chunk += paragraph + "\n\n"
+
+        else:
+
+            chunks.append(current_chunk.strip())
+
+            current_chunk = paragraph + "\n\n"
+
+    if current_chunk:
+        chunks.append(current_chunk.strip())
 
     return chunks
 
@@ -25,8 +39,29 @@ def chunk_document(document):
             {
                 "chunk_id": f"{document['filename']}_{idx}",
                 "source": document["filename"],
+                "category": get_category(document["filename"]),
                 "text": chunk
             }
         )
 
     return chunk_objects
+
+def get_category(filename):
+    filename = filename.lower()
+
+    if "leave" in filename or "handbook" in filename:
+        return "HR"
+
+    if "expense" in filename:
+        return "Finance"
+
+    if "vpn" in filename:
+        return "Security"
+
+    if "incident" in filename:
+        return "Operations"
+
+    if "product" in filename:
+        return "Product"
+
+    return "General"
