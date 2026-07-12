@@ -1,30 +1,21 @@
-def chunk_text(text, chunk_size=1200):
-    
-    paragraphs = text.split("\n\n")
+def chunk_text(text, chunk_size=1200, overlap=200):
 
     chunks = []
 
-    current_chunk = ""
+    start = 0
 
-    for paragraph in paragraphs:
+    while start < len(text):
 
-        paragraph = paragraph.strip()
+        end = start + chunk_size
 
-        if not paragraph:
-            continue
+        chunk = text[start:end]
 
-        if len(current_chunk) + len(paragraph) < chunk_size:
+        if chunk.strip():
+            chunks.append(chunk.strip())
 
-            current_chunk += paragraph + "\n\n"
-
-        else:
-
-            chunks.append(current_chunk.strip())
-
-            current_chunk = paragraph + "\n\n"
-
-    if current_chunk:
-        chunks.append(current_chunk.strip())
+        start += (
+            chunk_size - overlap
+        )
 
     return chunks
 

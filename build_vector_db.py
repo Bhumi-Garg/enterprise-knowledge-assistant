@@ -18,6 +18,16 @@ embeddings = generate_embeddings(
     all_chunks
 )
 
+empty_chunks = 0
+
+for chunk in all_chunks:
+
+    if not chunk["text"].strip():
+        empty_chunks += 1
+
+print("\nEmpty Chunks:")
+print(empty_chunks)
+
 store_chunks(
     all_chunks,
     embeddings
