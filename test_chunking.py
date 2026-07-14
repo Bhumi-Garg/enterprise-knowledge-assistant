@@ -10,6 +10,17 @@ for document in documents:
 
     all_chunks.extend(chunks)
 
+for chunk in all_chunks[:10]:
+
+    print("\n")
+    print("=" * 80)
+
+    print(chunk["source"])
+
+    print("-" * 80)
+
+    print(chunk["text"][:500])
+
 print(f"\nTotal Chunks: {len(all_chunks)}\n")
 
 print("=" * 60)

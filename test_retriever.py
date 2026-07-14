@@ -1,6 +1,6 @@
 from src.retriever import retrieve
 
-query = "How many PTO days do employees receive?"
+query = "PTO accrual days"
 
 results = retrieve(query)
 

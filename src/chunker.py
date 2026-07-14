@@ -1,41 +1,5 @@
-def chunk_text(text, chunk_size=1200, overlap=200):
+import re
 
-    chunks = []
-
-    start = 0
-
-    while start < len(text):
-
-        end = start + chunk_size
-
-        chunk = text[start:end]
-
-        if chunk.strip():
-            chunks.append(chunk.strip())
-
-        start += (
-            chunk_size - overlap
-        )
-
-    return chunks
-
-
-def chunk_document(document):
-    chunks = chunk_text(document["text"])
-
-    chunk_objects = []
-
-    for idx, chunk in enumerate(chunks):
-        chunk_objects.append(
-            {
-                "chunk_id": f"{document['filename']}_{idx}",
-                "source": document["filename"],
-                "category": get_category(document["filename"]),
-                "text": chunk
-            }
-        )
-
-    return chunk_objects
 
 def get_category(filename):
     filename = filename.lower()
@@ -56,3 +20,52 @@ def get_category(filename):
         return "Product"
 
     return "General"
+
+
+def chunk_text(text):
+
+    # Split on numbered section headings
+    sections = re.split(
+        r'(?=\b\d+\.\d+\b)',
+        text
+    )
+
+    chunks = []
+
+    for section in sections:
+
+        section = section.strip()
+
+        if len(section) < 100:
+            continue
+
+        chunks.append(section)
+
+    return chunks
+
+
+def chunk_document(document):
+
+    chunks = chunk_text(
+        document["text"]
+    )
+
+    chunk_objects = []
+
+    for idx, chunk in enumerate(chunks):
+
+        chunk_objects.append(
+            {
+                "chunk_id": f"{document['filename']}_{idx}",
+                "source": document["filename"],
+                "category": get_category(document["filename"]),
+                "section_title": extract_section_title(chunk),
+                "text": chunk
+            }
+        )
+
+    return chunk_objects
+
+def extract_section_title(text):
+    first_line = text.split("\n")[0].strip()
+    return first_line[:150]

@@ -25,7 +25,8 @@ def store_chunks(chunks, embeddings):
         metadatas=[
             {
                 "source": chunk["source"],
-                "category": chunk["category"]
+                "category": chunk["category"],
+                "section_title": chunk["section_title"]
             }
             for chunk in chunks
         ],
